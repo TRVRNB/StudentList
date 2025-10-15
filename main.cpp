@@ -9,8 +9,8 @@ using namespace std;
 
 struct Student{
   // struct used for storing student values
-  const char* name1 = "Anita"; // first name
-  const char* name2 = "Jabłońskí"; // last name
+  char name1[81] = "Anita"; // first name
+  char name2[81] = "Jabłońskí"; // last name
   int id = 123456; // ID
   float gpa = 3.0; // GPA
 };
@@ -18,7 +18,7 @@ struct Student{
 namespace studentlist{
   // public objects for this program
   char version[20] = "0.1.1";
-  vector<Student> students;
+  vector<Student*> students;
 
 }
 
@@ -30,43 +30,57 @@ void print(const char* text = ""){
   return;
 }
 
-const char* input(const char* text = ""){
+char* input(const char* text = ""){
   // cin wrapper, similar to python input()
   cout << text << flush;
   char input[81]; // handle up to 80 chars
   cin >> input;
-  const char* input1 = input;
+  char* input1 = input;
   return input1;
 }
 
 void add_student(){
   // adds a student based on user input
   char* pEnd; // this is needed for some low-level memory stuff in strtol and strtof
-  const char* name1 = input("Enter the student's first name: ");
-  const char* name2 = input("Enter the student's last name: ");
-  const char* id = input("Enter the student ID: ");
+  char name1[81]; strcpy(name1, input("Enter the student's first name: ")); // does this break style? the function was already bulky so i wanted to combine like terms
+  char name2[81]; strcpy(name2, input("Enter the student's last name: "));
+  char* id = input("Enter the student ID: ");
   int id1 = strtol(id, &pEnd, 10); // cast to int
-  const char* gpa = input("Enter the student's GPA: ");
+  char* gpa = input("Enter the student's GPA: ");
   float gpa1 = strtof(gpa, &pEnd); // cast to float
   float gpa2 = round(100 * gpa1) / 100; // round to 2 decimal points
   Student student;
-  student.name1 = name1; // first name
-  student.name2 = name2; // last name
+  strcpy(student.name1, name1);
+  strcpy(student.name2, name2);
   student.id = id1; // id
   student.gpa = gpa2; // gpa
-  students.push_back(student); // finally, add this student to the vector
+  Student* student1 = &student;
+  students.push_back(student1); // finally, add this student to the vector
   return;
 }
 
 void print_students(){
   // print the students that are stored
   print("Student list:");
-  for (Student student : students){
-    cout << student.name1 << ' ' << student.name2 << ", ";
-    cout << student.id << ", ";
-    cout << student.gpa << "\n";
+  short i = 1;
+  for (Student* student : students){
+    cout << i << ") ";
+    cout << student -> name1 << ' ' << student -> name2 << ", ";
+    cout << student -> id << ", ";
+    cout << student -> gpa << "\n";
+    ++i;
   }
   cout << flush;
+  return;
+}
+
+void delete_student(){
+  // remove a student at a point
+  char* pEnd;
+  char* student = input("Enter the student position to delete: ");
+  int student1 = strtol(student, &pEnd, 10) - 1; // cast to int
+  cout << "Removing " << students.at(student1) -> name1 << ' ' << students.at(student1) -> name2 << "...\n" << flush;
+  students.erase(students.begin() + student1); // remove it now
   return;
 }
   
@@ -82,6 +96,7 @@ int main(){
       print("QUIT: quit this program");
       print("ADD: add a student");
       print("PRINT: print all the students currently stored");
+      print("DELETE: delete a student");
     }
     if (strcmp(cmd, "QUIT") == 0){ // QUIT
       running = 0; // program will stop after completing this loop
@@ -92,6 +107,9 @@ int main(){
     }
     if (strcmp(cmd, "PRINT") == 0){ // PRINT
       print_students();
+    }
+    if (strcmp(cmd, "DELETE") == 0){ // DELETE
+      delete_student();
     }
   }
   return 0;
