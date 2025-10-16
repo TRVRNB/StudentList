@@ -1,3 +1,6 @@
+// id and gpa do not properly save
+// program crashes on deletion
+
 // stores a list of students, their ID, and their GPA
 // has ADD, PRINT, DELETE, and HELP functions
 #include <iostream>
@@ -49,13 +52,13 @@ void add_student(){
   char* gpa = input("Enter the student's GPA: ");
   float gpa1 = strtof(gpa, &pEnd); // cast to float
   float gpa2 = round(100 * gpa1) / 100; // round to 2 decimal points
-  Student student;
-  strcpy(student.name1, name1);
-  strcpy(student.name2, name2);
-  student.id = id1; // id
-  student.gpa = gpa2; // gpa
-  Student* student1 = &student;
-  students.push_back(student1); // finally, add this student to the vector
+  Student* student = new Student; // to keep it in memory after this scope ends; be sure to free this memory when it gets deleted
+  strcpy(student->name1, name1);
+  strcpy(student->name2, name2);
+  Student student1 = *student; // dereference
+  student1.id = id1; // id
+  student1.gpa = gpa2; // gpa
+  students.push_back(student); // finally, add this student to the vector
   return;
 }
 
@@ -65,9 +68,9 @@ void print_students(){
   short i = 1;
   for (Student* student : students){
     cout << i << ") ";
-    cout << student -> name1 << ' ' << student -> name2 << ", ";
-    cout << student -> id << ", ";
-    cout << student -> gpa << "\n";
+    cout << student->name1 << ' ' << student->name2 << ", ";
+    cout << student->id << ", ";
+    cout << student->gpa << "\n";
     ++i;
   }
   cout << flush;
@@ -79,8 +82,10 @@ void delete_student(){
   char* pEnd;
   char* student = input("Enter the student position to delete: ");
   int student1 = strtol(student, &pEnd, 10) - 1; // cast to int
-  cout << "Removing " << students.at(student1) -> name1 << ' ' << students.at(student1) -> name2 << "...\n" << flush;
+  Student* student2 = students.at(student1);
+  cout << "Removing " << student2->name1 << ' ' << student2->name2 << "...\n" << flush;
   students.erase(students.begin() + student1); // remove it now
+  delete student2;
   return;
 }
   
