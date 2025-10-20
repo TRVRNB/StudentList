@@ -20,7 +20,7 @@ struct Student{
 
 namespace studentlist{
   // public objects for this program
-  char version[20] = "0.1.1";
+  char version[20] = "1.0.0";
   vector<Student*> students;
 
 }
@@ -55,9 +55,8 @@ void add_student(){
   Student* student = new Student; // to keep it in memory after this scope ends; be sure to free this memory when it gets deleted
   strcpy(student->name1, name1);
   strcpy(student->name2, name2);
-  Student student1 = *student; // dereference
-  student1.id = id1; // id
-  student1.gpa = gpa2; // gpa
+  student->id = id1; // id
+  student->gpa = gpa2; // gpa
   students.push_back(student); // finally, add this student to the vector
   return;
 }
