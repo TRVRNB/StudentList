@@ -1,6 +1,3 @@
-// id and gpa do not properly save
-// program crashes on deletion
-
 // stores a list of students, their ID, and their GPA
 // has ADD, PRINT, DELETE, and HELP functions
 #include <iostream>
@@ -20,7 +17,7 @@ struct Student{
 
 namespace studentlist{
   // public objects for this program
-  char version[20] = "1.0.0";
+  char version[20] = "1.0.1";
   vector<Student*> students;
 
 }
